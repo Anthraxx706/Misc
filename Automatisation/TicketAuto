@@ -1,0 +1,70 @@
+#!/bin/bash
+# Init Script For Service Ticket Auto
+# chkconfig: 2345 20 80
+# Description : This Service will create Ticket automatically from Centreon
+RED='\033[0;31m'
+NC='\033[0m'
+GREEN='\033[0;32m'
+
+DAEMON="/home/admin/Automatisation/Scripts/TicketAuto.sh"
+LOGFILE="/home/admin/Automatisation/Logs/TicketAuto.log"
+NAME="TicketAuto"
+PID_FILE="/var/tmp/TicketAuto.pid"
+
+start() {
+        echo "Starting Service $NAME : "
+        su - nagios $DAEMON > /dev/null 2>&1 & 
+        echo $! > $PID_FILE
+PID=$(cat $PID_FILE)
+if [ -n "$PID" -a -e /proc/$PID ]; then
+    echo -e "$NAME is Started [${GREEN}OK${NC}]"
+    echo -e "[$(date "+%d-%m-%Y %H:%M:%S")] [${GREEN}Service${NC}] TicketAuto Service Started..." >> $LOGFILE
+else
+    echo -e "Can't start $NAME [${RED}NOK${NC}]"
+fi
+
+}
+
+stop() {
+    echo "Stopping $NAME server: "
+    if kill `cat $PID_FILE` > /dev/null 2>&1;
+    then
+        echo -e "Stop $NAME [${GREEN}OK${NC}]"    
+        echo -e "[$(date "+%d-%m-%Y %H:%M:%S")] [${GREEN}Service${NC}] TicketAuto Service Stopped..." >> $LOGFILE
+    else
+        echo -e "Stop $NAME [${RED}NOK${NC}]"
+    fi 
+}
+
+
+status() {
+PID=$(cat $PID_FILE)
+if [ -n "$PID" -a -e /proc/$PID ]; then
+    echo -e "$NAME [${GREEN}Started${NC}]"
+else
+    echo -e "$NAME [${RED}Stopped${NC}]"
+fi
+}
+
+## Core
+    
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit 0
