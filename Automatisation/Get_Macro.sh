@@ -9,8 +9,6 @@
 # Nagios
 ClapiCmd="/usr/share/centreon/www/modules/centreon-clapi/core/centreon -u clapi -p clapi_DKT_centreon -o service -a getmacro -v"
 
-
-
 # Args
 HostName="$1"
 ServiceDesc="$2"
