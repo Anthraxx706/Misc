@@ -14,10 +14,6 @@ HostName="$1"
 ServiceDesc="$2"
 
 
-
-GROS PD
-
-
 CanPriority=$($ClapiCmd "$HostName;$ServiceDesc" | grep "CAN_PRIORITY" | cut -d ";" -f 2)
 TicketAuto=$($ClapiCmd "$HostName;$ServiceDesc" | grep "TICKET_AUTO" | cut -d ";" -f 2)
 
